@@ -7,35 +7,51 @@
   <style>
     body {
       font-family: "Poppins", sans-serif;
-      background-color: #ccffcc;
-      color: #333;
+      background-color: #f9fff9;
+      color: #222;
       text-align: center;
       margin: 0;
       padding: 0;
     }
-    .welcome-screen, .quiz-container, .trophy-screen {
+
+    /* Logo Header */
+    .logo-header {
+      background-color: #00cc66;
+      padding: 20px 0;
+      font-size: 2.5em;
+      font-weight: 900;
+      color: black;
+      letter-spacing: 2px;
+    }
+
+    .welcome-screen, .quiz-container, .result-screen {
       display: none;
       padding: 30px;
     }
-    .welcome-screen.active, .quiz-container.active, .trophy-screen.active {
+
+    .welcome-screen.active, .quiz-container.active, .result-screen.active {
       display: block;
     }
+
     h1 {
-      font-size: 2.2em;
-      color: #008000;
+      font-size: 2em;
+      color: #006600;
       font-weight: 800;
       margin-bottom: 15px;
     }
+
     .question {
-      font-size: 1.4em;
+      font-size: 1.3em;
       color: #004d00;
-      font-weight: bold;
-      background: #b3ffb3;
+      font-weight: 700;
+      background: linear-gradient(180deg, #c8ffc8, #aaffaa);
       border-radius: 15px;
       padding: 15px;
       margin: 20px auto;
       width: 80%;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
+
     .options button {
       background-color: #4CAF50;
       border: none;
@@ -46,26 +62,33 @@
       cursor: pointer;
       font-size: 1em;
       transition: all 0.2s;
+      font-weight: bold;
     }
+
     .options button:hover {
       background-color: #3e8e41;
     }
+
     .options button.correct {
       background-color: #28a745 !important;
     }
+
     .options button.wrong {
       background-color: #dc3545 !important;
     }
+
     .trophy {
       font-size: 80px;
       color: gold;
       animation: bounce 1s infinite alternate;
     }
+
     @keyframes bounce {
       from { transform: translateY(0); }
       to { transform: translateY(-15px); }
     }
-    .start-btn {
+
+    .start-btn, .retry-btn {
       background-color: #009933;
       color: white;
       border: none;
@@ -74,85 +97,58 @@
       border-radius: 10px;
       cursor: pointer;
       transition: 0.3s;
+      font-weight: bold;
     }
-    .start-btn:hover {
+
+    .start-btn:hover, .retry-btn:hover {
       background-color: #00cc66;
+    }
+
+    .score {
+      font-size: 1.4em;
+      font-weight: bold;
+      color: #333;
     }
   </style>
 </head>
 <body>
 
+  <div class="logo-header">T-REX</div>
+
   <!-- Welcome Screen -->
   <div class="welcome-screen active">
     <h1>Welcome to the T-REX Quiz 🦖</h1>
-    <p>Test your knowledge and win your T-REX Trophy!</p>
+    <p>Test your knowledge about the T-REX Project and see if you can earn a trophy!</p>
     <button class="start-btn" onclick="startQuiz()">Start Quiz</button>
   </div>
 
   <!-- Quiz Container -->
   <div class="quiz-container">
-    <h1>T-REX Project Quiz</h1>
+    <h1>Answer the Questions Below</h1>
     <div id="question-container"></div>
     <div class="options" id="options"></div>
   </div>
 
-  <!-- Trophy Screen -->
-  <div class="trophy-screen">
-    <div class="trophy">🏆</div>
-    <h2>Congratulations! You finished the T-REX Quiz!</h2>
-    <p>You’ve earned the T-REX Trophy 🦖🔥</p>
+  <!-- Result Screen -->
+  <div class="result-screen">
+    <div id="result-content"></div>
+    <button class="retry-btn" onclick="retryQuiz()">Retry Quiz</button>
   </div>
 
   <script>
     const questions = [
-      {
-        question: "T-REX Network focuses on which technology?",
-        options: ["Blockchain", "AI", "IoT", "Big Data"],
-        correct: 0
-      },
-      {
-        question: "What is the main purpose of T-REX?",
-        options: ["Gaming", "DeFi Automation", "Social Media", "Storage"],
-        correct: 1
-      },
-      {
-        question: "Which token is native to T-REX ecosystem?",
-        options: ["TRX", "TREX", "T-RX", "REX"],
-        correct: 1
-      },
-      {
-        question: "T-REX ensures better user experience through?",
-        options: ["AI", "Cross-chain support", "VR tools", "None"],
-        correct: 1
-      },
-      {
-        question: "Who benefits the most from T-REX?",
-        options: ["Developers", "Users", "Investors", "All of the above"],
-        correct: 3
-      },
-      {
-        question: "What’s the vision of T-REX Network?",
-        options: [
-          "Connecting fragmented blockchains",
-          "Creating NFTs",
-          "Launching a social app",
-          "Gaming"
-        ],
-        correct: 0
-      },
-      {
-        question: "T-REX offers scalability and ____ ?",
-        options: ["Speed", "Security", "Decentralization", "Privacy"],
-        correct: 1
-      },
-      {
-        question: "Which color best represents the T-REX theme?",
-        options: ["Blue", "Green", "Red", "Black"],
-        correct: 1
-      }
+      { question: "T-REX Network focuses on which technology?", options: ["Blockchain", "AI", "IoT", "Big Data"], correct: 0 },
+      { question: "What is the main purpose of T-REX?", options: ["Gaming", "DeFi Automation", "Social Media", "Storage"], correct: 1 },
+      { question: "Which token is native to T-REX ecosystem?", options: ["TRX", "TREX", "T-RX", "REX"], correct: 1 },
+      { question: "T-REX ensures better user experience through?", options: ["AI", "Cross-chain support", "VR tools", "None"], correct: 1 },
+      { question: "Who benefits the most from T-REX?", options: ["Developers", "Users", "Investors", "All of the above"], correct: 3 },
+      { question: "What’s the vision of T-REX Network?", options: ["Connecting fragmented blockchains", "Creating NFTs", "Launching a social app", "Gaming"], correct: 0 },
+      { question: "T-REX offers scalability and ____ ?", options: ["Speed", "Security", "Decentralization", "Privacy"], correct: 1 },
+      { question: "Which color best represents the T-REX theme?", options: ["Blue", "Green", "Red", "Black"], correct: 1 }
     ];
 
     let currentQuestion = 0;
+    let score = 0;
 
     function startQuiz() {
       document.querySelector(".welcome-screen").classList.remove("active");
@@ -181,23 +177,40 @@
       buttons.forEach(b => b.disabled = true);
       if (selected === q.correct) {
         btn.classList.add("correct");
+        score++;
       } else {
         btn.classList.add("wrong");
         buttons[q.correct].classList.add("correct");
       }
+
       setTimeout(() => {
         currentQuestion++;
         if (currentQuestion < questions.length) {
           showQuestion();
         } else {
-          showTrophy();
+          showResult();
         }
-      }, 1200);
+      }, 1000);
     }
 
-    function showTrophy() {
+    function showResult() {
       document.querySelector(".quiz-container").classList.remove("active");
-      document.querySelector(".trophy-screen").classList.add("active");
+      document.querySelector(".result-screen").classList.add("active");
+      const resultDiv = document.getElementById("result-content");
+      resultDiv.innerHTML = `<div class="score">Your Score: ${score} / ${questions.length}</div>`;
+
+      if (score >= 5 && score <= 8) {
+        resultDiv.innerHTML += `<div class="trophy">🏆</div><p>Congratulations! You earned a T-REX Trophy!</p>`;
+      } else {
+        resultDiv.innerHTML += `<p>Keep trying! You can retry the quiz.</p>`;
+      }
+    }
+
+    function retryQuiz() {
+      score = 0;
+      currentQuestion = 0;
+      document.querySelector(".result-screen").classList.remove("active");
+      document.querySelector(".welcome-screen").classList.add("active");
     }
   </script>
 </body>
