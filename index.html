@@ -1,184 +1,204 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>T-Rex Quiz — 8 Questions</title>
-<style>
-  :root{
-    --bg:#071227; --card:#0b1220; --accent:#06b6d4; --text:#e6eef6;
-  }
-  body{font-family:Inter,system-ui,Arial,sans-serif;background:linear-gradient(180deg,#051025,#071227);color:var(--text);margin:0;padding:28px;display:flex;justify-content:center;min-height:100vh;}
-  .wrap{width:100%;max-width:760px;}
-  .card{background:var(--card);padding:24px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.6);}
-  h1{margin:0 0 6px;font-size:22px;background:linear-gradient(90deg,#06b6d4,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-  h2{margin:0 0 14px;font-size:14px;color:#94a3b8}
-  .qbox{margin-top:10px;padding:16px;border-radius:10px;background:linear-gradient(90deg, rgba(255,255,255,0.02), transparent);}
-  .qtitle{font-weight:700;margin-bottom:12px;color:#f8fafc}
-  .opts{display:flex;flex-direction:column;gap:10px}
-  .opt{padding:10px 12px;border-radius:8px;background:rgba(255,255,255,0.03);cursor:pointer;border:1px solid rgba(255,255,255,0.04);transition:all .14s}
-  .opt:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(2,6,23,.6)}
-  .opt.locked{pointer-events:none;opacity:.75}
-  .opt.correct{background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.25);color:#9ff3d6}
-  .opt.wrong{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.14);color:#ffd6d6}
-  .meta{margin-top:14px;display:flex;gap:8px;align-items:center}
-  .btn{background:var(--accent);color:#022;padding:8px 12px;border-radius:8px;border:none;cursor:pointer;font-weight:700}
-  .hidden{display:none}
-  .result{margin-top:18px;padding:12px;border-radius:8px;background:rgba(255,255,255,0.02)}
-  footer{margin-top:12px;font-size:13px;color:#94a3b8;text-align:center}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>T-REX Quiz</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background-color: #ccffcc;
+      color: #333;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    .welcome-screen, .quiz-container, .trophy-screen {
+      display: none;
+      padding: 30px;
+    }
+    .welcome-screen.active, .quiz-container.active, .trophy-screen.active {
+      display: block;
+    }
+    h1 {
+      font-size: 2.2em;
+      color: #008000;
+      font-weight: 800;
+      margin-bottom: 15px;
+    }
+    .question {
+      font-size: 1.4em;
+      color: #004d00;
+      font-weight: bold;
+      background: #b3ffb3;
+      border-radius: 15px;
+      padding: 15px;
+      margin: 20px auto;
+      width: 80%;
+    }
+    .options button {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 10px 25px;
+      margin: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: all 0.2s;
+    }
+    .options button:hover {
+      background-color: #3e8e41;
+    }
+    .options button.correct {
+      background-color: #28a745 !important;
+    }
+    .options button.wrong {
+      background-color: #dc3545 !important;
+    }
+    .trophy {
+      font-size: 80px;
+      color: gold;
+      animation: bounce 1s infinite alternate;
+    }
+    @keyframes bounce {
+      from { transform: translateY(0); }
+      to { transform: translateY(-15px); }
+    }
+    .start-btn {
+      background-color: #009933;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 1.2em;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .start-btn:hover {
+      background-color: #00cc66;
+    }
+  </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card">
-      <h1>T-Rex Quick Quiz</h1>
-      <h2>8 questions based on info from T-Rex blog / site.</h2>
 
-      <div id="quizArea"></div>
-
-      <div id="resultScreen" class="result hidden"></div>
-
-      <div class="meta">
-        <div style="flex:1;color:#94a3b8;font-size:13px">Answer each question — options lock on first click.</div>
-        <button id="restartBtn" class="btn hidden">Restart</button>
-      </div>
-
-      <footer>Source: T-Rex blog (site header & pages). :contentReference[oaicite:1]{index=1}</footer>
-    </div>
+  <!-- Welcome Screen -->
+  <div class="welcome-screen active">
+    <h1>Welcome to the T-REX Quiz 🦖</h1>
+    <p>Test your knowledge and win your T-REX Trophy!</p>
+    <button class="start-btn" onclick="startQuiz()">Start Quiz</button>
   </div>
 
-<script>
-/*
-  8 questions derived from https://www.trex.xyz/blog
-  Features:
-  - One question at a time
-  - Option locks on first click (no re-click)
-  - Shows correct / wrong immediately
-  - Auto-advance to next question after 1s
-  - Final result screen with message
-*/
+  <!-- Quiz Container -->
+  <div class="quiz-container">
+    <h1>T-REX Project Quiz</h1>
+    <div id="question-container"></div>
+    <div class="options" id="options"></div>
+  </div>
 
-const questions = [
-  {
-    text: "What action does the T-Rex site invite visitors to take on the blog page?",
-    options: ["Download whitepaper", "Get on the waitlist", "Buy NFTs", "Apply for jobs"],
-    answer: 1
-  },
-  {
-    text: "Which browser extension is mentioned on the T-Rex site?",
-    options: ["T-Rex Firefox Addon", "T-Rex Chrome Extension", "T-Rex Edge Plugin", "T-Rex Mobile App"],
-    answer: 1
-  },
-  {
-    text: "T-Rex says to enter which value to receive an exclusive 'popcorn'?",
-    options: ["Email only", "EVM wallet address", "Twitter handle", "Discord ID"],
-    answer: 1
-  },
-  {
-    text: "Which blockchain network powers T-Rex (as indicated in the site footer)?",
-    options: ["Polygon", "Sui", "Arbitrum", "Optimism"],
-    answer: 2
-  },
-  {
-    text: "Which main site sections are visible in the header navigation on the blog?",
-    options: ["Discovery, Developers, NFT", "Market, Wallets, Team", "Docs, Partners, Jobs", "Shop, Events, Careers"],
-    answer: 0
-  },
-  {
-    text: "Which documentation resource is linked from the site header?",
-    options: ["Whitepaper PDF", "GitHub repo", "Litepaper (gitbook)", "Medium articles"],
-    answer: 2
-  },
-  {
-    text: "Which community platforms are shown as social images on the blog page?",
-    options: ["Twitter and Discord", "Telegram and Reddit", "LinkedIn and YouTube", "Instagram and Facebook"],
-    answer: 0
-  },
-  {
-    text: "Under PROGRAMS on the blog page, which program is explicitly listed?",
-    options: ["Designers", "Developers", "Moderators", "Ambassadors"],
-    answer: 1
-  }
-];
+  <!-- Trophy Screen -->
+  <div class="trophy-screen">
+    <div class="trophy">🏆</div>
+    <h2>Congratulations! You finished the T-REX Quiz!</h2>
+    <p>You’ve earned the T-REX Trophy 🦖🔥</p>
+  </div>
 
-let idx = 0;
-let score = 0;
+  <script>
+    const questions = [
+      {
+        question: "T-REX Network focuses on which technology?",
+        options: ["Blockchain", "AI", "IoT", "Big Data"],
+        correct: 0
+      },
+      {
+        question: "What is the main purpose of T-REX?",
+        options: ["Gaming", "DeFi Automation", "Social Media", "Storage"],
+        correct: 1
+      },
+      {
+        question: "Which token is native to T-REX ecosystem?",
+        options: ["TRX", "TREX", "T-RX", "REX"],
+        correct: 1
+      },
+      {
+        question: "T-REX ensures better user experience through?",
+        options: ["AI", "Cross-chain support", "VR tools", "None"],
+        correct: 1
+      },
+      {
+        question: "Who benefits the most from T-REX?",
+        options: ["Developers", "Users", "Investors", "All of the above"],
+        correct: 3
+      },
+      {
+        question: "What’s the vision of T-REX Network?",
+        options: [
+          "Connecting fragmented blockchains",
+          "Creating NFTs",
+          "Launching a social app",
+          "Gaming"
+        ],
+        correct: 0
+      },
+      {
+        question: "T-REX offers scalability and ____ ?",
+        options: ["Speed", "Security", "Decentralization", "Privacy"],
+        correct: 1
+      },
+      {
+        question: "Which color best represents the T-REX theme?",
+        options: ["Blue", "Green", "Red", "Black"],
+        correct: 1
+      }
+    ];
 
-const quizArea = document.getElementById('quizArea');
-const resultScreen = document.getElementById('resultScreen');
-const restartBtn = document.getElementById('restartBtn');
+    let currentQuestion = 0;
 
-function renderQuestion(){
-  resultScreen.classList.add('hidden');
-  const q = questions[idx];
-  quizArea.innerHTML = `
-    <div class="qbox">
-      <div class="qtitle">Question ${idx+1} of ${questions.length}: ${q.text}</div>
-      <div class="opts">
-        ${q.options.map((o,i)=>`<div class="opt" data-i="${i}">${o}</div>`).join('')}
-      </div>
-    </div>
-  `;
+    function startQuiz() {
+      document.querySelector(".welcome-screen").classList.remove("active");
+      document.querySelector(".quiz-container").classList.add("active");
+      showQuestion();
+    }
 
-  // attach handlers
-  document.querySelectorAll('.opt').forEach(el=>{
-    el.addEventListener('click', onOptionClick, { once:true }); // once ensures single click per element
-  });
-}
+    function showQuestion() {
+      const q = questions[currentQuestion];
+      document.getElementById("question-container").innerHTML = `
+        <div class="question">${currentQuestion + 1}. ${q.question}</div>
+      `;
+      const optionsDiv = document.getElementById("options");
+      optionsDiv.innerHTML = "";
+      q.options.forEach((opt, i) => {
+        const btn = document.createElement("button");
+        btn.textContent = opt;
+        btn.onclick = () => selectOption(i, btn);
+        optionsDiv.appendChild(btn);
+      });
+    }
 
-function onOptionClick(e){
-  const el = e.currentTarget;
-  const chosen = Number(el.dataset.i);
-  const q = questions[idx];
-  // lock all options for this question
-  document.querySelectorAll('.opt').forEach(o=>{
-    o.classList.add('locked');
-    o.style.pointerEvents = 'none';
-  });
+    function selectOption(selected, btn) {
+      const q = questions[currentQuestion];
+      const buttons = document.querySelectorAll(".options button");
+      buttons.forEach(b => b.disabled = true);
+      if (selected === q.correct) {
+        btn.classList.add("correct");
+      } else {
+        btn.classList.add("wrong");
+        buttons[q.correct].classList.add("correct");
+      }
+      setTimeout(() => {
+        currentQuestion++;
+        if (currentQuestion < questions.length) {
+          showQuestion();
+        } else {
+          showTrophy();
+        }
+      }, 1200);
+    }
 
-  if(chosen === q.answer){
-    el.classList.add('correct');
-    score++;
-  } else {
-    el.classList.add('wrong');
-    // highlight correct
-    const correctEl = document.querySelector(`.opt[data-i="${q.answer}"]`);
-    if(correctEl) correctEl.classList.add('correct');
-  }
-
-  // short pause then next or finish
-  setTimeout(()=> {
-    idx++;
-    if(idx < questions.length) renderQuestion();
-    else showResult();
-  }, 900);
-}
-
-function showResult(){
-  quizArea.innerHTML = '';
-  const total = questions.length;
-  let msg = '';
-  const pct = Math.round((score/total)*100);
-  if(pct === 100) msg = "Perfect! You're a Trex insider 🦖";
-  else if(pct >= 75) msg = "Great job — you know the T-Rex basics!";
-  else if(pct >= 40) msg = "Nice effort — brush up on the site to improve!";
-  else msg = "Good try — read the blog and come back stronger.";
-
-  resultScreen.classList.remove('hidden');
-  resultScreen.innerHTML = `
-    <div style="font-weight:800;font-size:18px">Result</div>
-    <div style="margin-top:8px">Score: ${score} / ${total} (${pct}%)</div>
-    <div style="margin-top:8px">${msg}</div>
-  `;
-  restartBtn.classList.remove('hidden');
-}
-
-restartBtn.addEventListener('click', ()=>{
-  idx = 0; score = 0; restartBtn.classList.add('hidden'); renderQuestion();
-});
-
-// start
-renderQuestion();
-</script>
+    function showTrophy() {
+      document.querySelector(".quiz-container").classList.remove("active");
+      document.querySelector(".trophy-screen").classList.add("active");
+    }
+  </script>
 </body>
 </html>
