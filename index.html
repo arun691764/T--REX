@@ -48,8 +48,12 @@
     border-radius: 10px;
     cursor: pointer;
     width: 80%;
-    text-align: center;
+    text-align: left;
     transition: background-color 0.3s;
+  }
+  .option span {
+    font-weight: bold;
+    margin-right: 10px;
   }
   .option:hover {
     background-color: #ddd;
@@ -93,14 +97,14 @@
 
 <script>
 const questions = [
-  {q: "T-REX project किससे संबंधित है?", options: ["Blockchain", "AI", "Robotics", "E-commerce"], answer: 0},
-  {q: "T-REX का मुख्य उद्देश्य क्या है?", options: ["Decentralization", "Chatting", "Gaming", "Video"], answer: 0},
-  {q: "T-REX का उपयोग किस तकनीक में होता है?", options: ["Web3", "Android", "iOS", "Web2"], answer: 0},
-  {q: "T-REX में transactions किससे secure होती हैं?", options: ["Smart Contracts", "Passwords", "QR Codes", "AI"], answer: 0},
-  {q: "T-REX logo का मुख्य रंग क्या है?", options: ["Green", "Blue", "Red", "Yellow"], answer: 0},
-  {q: "T-REX में user data कहाँ store होता है?", options: ["Blockchain", "Server", "Localhost", "Cache"], answer: 0},
-  {q: "T-REX का token किस चीज़ से जुड़ा है?", options: ["Utility", "NFT", "Meme", "Game"], answer: 0},
-  {q: "T-REX का full form क्या है?", options: ["Tech Revolution Exchange", "Trade Rapid Express", "Time Ready Exchange", "Token Reward Exchange"], answer: 0}
+  {q: "What is the T-REX project related to?", options: ["Blockchain", "AI", "Robotics", "E-commerce"], answer: 0},
+  {q: "What is the main purpose of T-REX?", options: ["Decentralization", "Chatting", "Gaming", "Video"], answer: 0},
+  {q: "Which technology is used in T-REX?", options: ["Web3", "Android", "iOS", "Web2"], answer: 0},
+  {q: "How are transactions secured in T-REX?", options: ["Smart Contracts", "Passwords", "QR Codes", "AI"], answer: 0},
+  {q: "What is the main color of the T-REX logo?", options: ["Green", "Blue", "Red", "Yellow"], answer: 0},
+  {q: "Where is user data stored in T-REX?", options: ["Blockchain", "Server", "Localhost", "Cache"], answer: 0},
+  {q: "T-REX token is connected with what type of asset?", options: ["Utility", "NFT", "Meme", "Game"], answer: 0},
+  {q: "What does T-REX stand for?", options: ["Tech Revolution Exchange", "Trade Rapid Express", "Time Ready Exchange", "Token Reward Exchange"], answer: 0}
 ];
 
 let currentQ = 0;
@@ -121,9 +125,10 @@ function loadQuestion() {
   const q = questions[currentQ];
   qEl.textContent = `Q${currentQ + 1}. ${q.q}`;
   optEl.innerHTML = "";
+  const labels = ["A", "B", "C", "D"];
   q.options.forEach((opt, i) => {
     const btn = document.createElement("button");
-    btn.textContent = opt;
+    btn.innerHTML = `<span>${labels[i]}.</span> ${opt}`;
     btn.classList.add("option");
     btn.onclick = () => selectOption(i, btn);
     optEl.appendChild(btn);
@@ -158,7 +163,7 @@ function showResult() {
   qEl.textContent = "";
   optEl.innerHTML = "";
   resultEl.classList.remove("hidden");
-  resultEl.innerHTML = `आपका स्कोर: ${score}/${questions.length}<br>`;
+  resultEl.innerHTML = `Your Score: ${score}/${questions.length}<br>`;
   if (score >= 5) {
     resultEl.innerHTML += `<div class='trophy'>🏆 Gold Trophy</div>`;
   } else if (score >= 3) {
