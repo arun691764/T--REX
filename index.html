@@ -99,12 +99,12 @@
 const questions = [
   {q: "What is the T-REX project related to?", options: ["Blockchain", "AI", "Robotics", "E-commerce"], answer: 0},
   {q: "What is the main purpose of T-REX?", options: ["Decentralization", "Chatting", "Gaming", "Video"], answer: 0},
-  {q: "Which technology is used in T-REX?", options: ["Web3", "Android", "iOS", "Web2"], answer: 0},
-  {q: "How are transactions secured in T-REX?", options: ["Smart Contracts", "Passwords", "QR Codes", "AI"], answer: 0},
-  {q: "What is the main color of the T-REX logo?", options: ["Green", "Blue", "Red", "Yellow"], answer: 0},
+  {q: "Which technology powers T-REX?", options: ["Web3", "Android", "iOS", "Web2"], answer: 0},
+  {q: "How are T-REX transactions secured?", options: ["Smart Contracts", "Passwords", "QR Codes", "AI"], answer: 0},
+  {q: "What is the main color of the T-REX logo?", options: ["Blue", "Green", "Red", "Yellow"], answer: 1},
   {q: "Where is user data stored in T-REX?", options: ["Blockchain", "Server", "Localhost", "Cache"], answer: 0},
   {q: "T-REX token is connected with what type of asset?", options: ["Utility", "NFT", "Meme", "Game"], answer: 0},
-  {q: "What does T-REX stand for?", options: ["Tech Revolution Exchange", "Trade Rapid Express", "Time Ready Exchange", "Token Reward Exchange"], answer: 0}
+  {q: "What does T-REX stand for?", options: ["Tech Revolution Exchange", "Trade Rapid Express", "Token Reward Exchange", "Time Ready Exchange"], answer: 0}
 ];
 
 let currentQ = 0;
@@ -169,8 +169,9 @@ function showResult() {
   } else if (score >= 3) {
     resultEl.innerHTML += `<div class='trophy'>🥈 Silver Trophy</div>`;
   } else {
-    resultEl.innerHTML += `<div class='trophy'>❌ Try Again!</div><button class="retry" onclick="restartQuiz()">Retry</button>`;
+    resultEl.innerHTML += `<div class='trophy'>❌ Try Again!</div>`;
   }
+  resultEl.innerHTML += `<br><button class="retry" onclick="restartQuiz()">Retry Quiz</button>`;
 }
 
 function restartQuiz() {
