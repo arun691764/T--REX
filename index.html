@@ -25,7 +25,7 @@
   }
   .quiz-container {
     margin: 30px auto;
-    max-width: 600px;
+    max-width: 650px;
     background: white;
     padding: 20px;
     border-radius: 15px;
@@ -64,17 +64,13 @@
   .wrong {
     background-color: #ff8a8a !important;
   }
-  .hidden {
-    display: none;
-  }
+  .hidden { display: none; }
   .result {
     font-size: 1.3em;
     margin-top: 20px;
   }
-  .trophy {
-    font-size: 3em;
-  }
-  button.retry {
+  .trophy { font-size: 3em; }
+  button {
     margin-top: 15px;
     padding: 10px 20px;
     background-color: #28a745;
@@ -83,13 +79,25 @@
     border-radius: 8px;
     cursor: pointer;
   }
+  #welcomeScreen {
+    margin-top: 150px;
+  }
+  #welcomeScreen h1 {
+    font-size: 2em;
+    color: green;
+  }
 </style>
 </head>
 <body>
 
-<div class="logo">T - REX</div>
+<div id="welcomeScreen">
+  <div class="logo">T - REX</div>
+  <h1>Welcome to T-REX Project Quiz 🚀</h1>
+  <p>Test your knowledge about the T-REX decentralized ecosystem.</p>
+  <button onclick="startQuiz()">Start Quiz</button>
+</div>
 
-<div class="quiz-container">
+<div id="quizScreen" class="quiz-container hidden">
   <h2 id="question" class="question"></h2>
   <div id="options"></div>
   <div id="result" class="result hidden"></div>
@@ -97,14 +105,18 @@
 
 <script>
 const questions = [
-  {q: "What is the T-REX project related to?", options: ["Blockchain", "AI", "Robotics", "E-commerce"], answer: 0},
-  {q: "What is the main purpose of T-REX?", options: ["Decentralization", "Chatting", "Gaming", "Video"], answer: 0},
-  {q: "Which technology powers T-REX?", options: ["Web3", "Android", "iOS", "Web2"], answer: 0},
-  {q: "How are T-REX transactions secured?", options: ["Smart Contracts", "Passwords", "QR Codes", "AI"], answer: 0},
-  {q: "What is the main color of the T-REX logo?", options: ["Blue", "Green", "Red", "Yellow"], answer: 1},
-  {q: "Where is user data stored in T-REX?", options: ["Blockchain", "Server", "Localhost", "Cache"], answer: 0},
-  {q: "T-REX token is connected with what type of asset?", options: ["Utility", "NFT", "Meme", "Game"], answer: 0},
-  {q: "What does T-REX stand for?", options: ["Tech Revolution Exchange", "Trade Rapid Express", "Token Reward Exchange", "Time Ready Exchange"], answer: 0}
+  {q: "What does T-REX stand for?", options: ["Tech Revolution Exchange", "Token Rapid Exchange", "Trade Ready Express", "Time Range Exchange"], answer: 0},
+  {q: "Which blockchain does T-REX primarily operate on?", options: ["Ethereum", "Polygon", "Solana", "BSC"], answer: 1},
+  {q: "What type of product is T-REX building?", options: ["Decentralized Trading Protocol", "Video Streaming App", "AI Chatbot", "E-commerce Platform"], answer: 0},
+  {q: "T-REX focuses mainly on which sector?", options: ["DeFi", "NFT Art", "Gaming", "Cloud Storage"], answer: 0},
+  {q: "Which token standard does T-REX support?", options: ["ERC-20", "ERC-721", "ERC-1155", "All of the above"], answer: 3},
+  {q: "What makes T-REX unique?", options: ["Cross-chain liquidity", "Only centralized trading", "No token utility", "Manual execution"], answer: 0},
+  {q: "What is the color theme of T-REX branding?", options: ["Green", "Blue", "Red", "Purple"], answer: 0},
+  {q: "Which key concept powers T-REX?", options: ["Smart Contracts", "Traditional Brokers", "Server-based Trading", "Offline Sync"], answer: 0},
+  {q: "Who controls T-REX ecosystem?", options: ["Community DAO", "Single Company", "Private Investors", "None"], answer: 0},
+  {q: "How does T-REX ensure security?", options: ["Audited Smart Contracts", "No checks", "Password-based", "Manual approval"], answer: 0},
+  {q: "What type of rewards can users earn on T-REX?", options: ["Token incentives", "Physical gifts", "Nothing", "Discount coupons"], answer: 0},
+  {q: "Which is the future goal of T-REX?", options: ["To expand into multi-chain DeFi", "To become a video platform", "To sell NFTs only", "To stop development"], answer: 0}
 ];
 
 let currentQ = 0;
@@ -113,6 +125,14 @@ let score = 0;
 const qEl = document.getElementById("question");
 const optEl = document.getElementById("options");
 const resultEl = document.getElementById("result");
+const quizScreen = document.getElementById("quizScreen");
+const welcomeScreen = document.getElementById("welcomeScreen");
+
+function startQuiz(){
+  welcomeScreen.classList.add("hidden");
+  quizScreen.classList.remove("hidden");
+  loadQuestion();
+}
 
 function randomColor() {
   const colors = ["#ff6666","#ffb366","#66ff99","#66b3ff","#ff66ff","#ffff66","#b366ff"];
@@ -125,7 +145,7 @@ function loadQuestion() {
   const q = questions[currentQ];
   qEl.textContent = `Q${currentQ + 1}. ${q.q}`;
   optEl.innerHTML = "";
-  const labels = ["A", "B", "C", "D"];
+  const labels = ["A","B","C","D"];
   q.options.forEach((opt, i) => {
     const btn = document.createElement("button");
     btn.innerHTML = `<span>${labels[i]}.</span> ${opt}`;
@@ -139,23 +159,18 @@ function selectOption(i, btn) {
   const q = questions[currentQ];
   const allBtns = document.querySelectorAll(".option");
   allBtns.forEach(b => b.disabled = true);
-
   if (i === q.answer) {
     btn.classList.add("correct");
     score++;
   } else {
     btn.classList.add("wrong");
-    const correctBtn = allBtns[q.answer];
-    correctBtn.classList.add("correct");
+    allBtns[q.answer].classList.add("correct");
   }
 
   setTimeout(() => {
     currentQ++;
-    if (currentQ < questions.length) {
-      loadQuestion();
-    } else {
-      showResult();
-    }
+    if (currentQ < questions.length) loadQuestion();
+    else showResult();
   }, 1000);
 }
 
@@ -164,14 +179,10 @@ function showResult() {
   optEl.innerHTML = "";
   resultEl.classList.remove("hidden");
   resultEl.innerHTML = `Your Score: ${score}/${questions.length}<br>`;
-  if (score >= 5) {
-    resultEl.innerHTML += `<div class='trophy'>🏆 Gold Trophy</div>`;
-  } else if (score >= 3) {
-    resultEl.innerHTML += `<div class='trophy'>🥈 Silver Trophy</div>`;
-  } else {
-    resultEl.innerHTML += `<div class='trophy'>❌ Try Again!</div>`;
-  }
-  resultEl.innerHTML += `<br><button class="retry" onclick="restartQuiz()">Retry Quiz</button>`;
+  if (score >= 9) resultEl.innerHTML += `<div class='trophy'>🏆 Gold Trophy</div>`;
+  else if (score >= 6) resultEl.innerHTML += `<div class='trophy'>🥈 Silver Trophy</div>`;
+  else resultEl.innerHTML += `<div class='trophy'>❌ Try Again!</div>`;
+  resultEl.innerHTML += `<br><button onclick="restartQuiz()">Retry Quiz</button>`;
 }
 
 function restartQuiz() {
@@ -179,9 +190,6 @@ function restartQuiz() {
   currentQ = 0;
   loadQuestion();
 }
-
-loadQuestion();
 </script>
-
 </body>
 </html>
